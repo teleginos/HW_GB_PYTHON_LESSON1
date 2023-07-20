@@ -1,3 +1,4 @@
+from decimal import Decimal, getcontext
 import random
 import time
 
@@ -57,15 +58,64 @@ def case3():
 
 
 def case4():
-    pass
+    def sum_digits(num):
+        if isinstance(num, int):
+            return sum_digits_int(num)
+        elif isinstance(num, float):
+            num = Decimal(str(num))
+            int_part, float_part = int(num), num - int(num)
+            getcontext().prec = len(str(num))
+            return sum_digits_int(int_part) + sum_digits_float(float_part)
+        else:
+            raise ValueError("Число должно быть целым или вещественным.")
+
+    def sum_digits_int(n):
+        n = abs(n)
+        total = 0
+        while n > 0:
+            total += n % 10
+            n //= 10
+        return total
+
+    def sum_digits_float(n):
+        total = 0
+        while n > 0:
+            n *= 10
+            digit = int(n)
+            total += digit
+            n -= digit
+        return total
+
+    number = float(input("Введите число: "))
+    print(sum_digits(number))
 
 
 def case5():
-    pass
+    def check_statement(predicates):
+        return not any(predicates) == all(not p for p in predicates)
+
+    start_time = time.time()
+
+    for _ in range(100):
+        num_predicates = random.randint(3, 15)
+        predicates = [random.choice([True, False]) for _ in range(num_predicates)]
+        print(f"Предикаты: {predicates} - Утверждение {'верно' if check_statement(predicates) else 'ложно'}")
+
+    end_time = time.time()
+
+    print(f"Общее время выполнения: {end_time - start_time} секунд")
 
 
 def case6():
-    pass
+    def all_divisors(number):
+        divisors = set()
+        for i in range(1, int(number ** 0.5) + 1):
+            if number % i == 0:
+                divisors.add(i)
+                divisors.add(number // i)
+        return sorted(list(divisors))
+
+    print(all_divisors(int(input("Введите целое число: "))))
 
 
 def default():
